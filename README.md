@@ -1,5 +1,7 @@
 # taxi
 
+SPA "Airport taxi" powered by jsonplaceholder API (Vue, Typescript, Vuetify)
+
 ## Project setup
 ```
 npm install
