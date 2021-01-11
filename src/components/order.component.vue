@@ -231,7 +231,7 @@ export default class OrderComponent extends Vue {
         this.resetForm();
         this.snackBarIsShow = true;
         if (res && res.data) {
-          this.orders = [...res.data];
+          this.orders.push(res.data);
           localStorage.setItem('orders', JSON.stringify(this.orders));
         }
       });
