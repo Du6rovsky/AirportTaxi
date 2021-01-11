@@ -1,4 +1,5 @@
 export default class OrderEntity {
+  public id: string = '';
   public name: string = '';
   public phone: string = '';
   public date: string = '';

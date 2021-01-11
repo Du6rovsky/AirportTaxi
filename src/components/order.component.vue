@@ -109,7 +109,7 @@
           v-bind:rows="orders")
           template(v-slot="row")
             v-btn(small
-              color="error"
+            color="error"
               @click="openConfirmModal(row)")
               v-icon fa-trash-alt
 
@@ -128,7 +128,7 @@
 <script lang="ts">
 
 import {Component, Vue} from 'vue-property-decorator';
-import Order from "@/core/entities/Order.entity";
+import OrderEntity from "@/core/entities/Order.entity";
 import TableComponent from "@/shared/partials/table/table.component.vue";
 import {orderService} from "@/services/order.service";
 import HeaderEntity from "@/core/entities/Header.entity";
@@ -152,8 +152,8 @@ export default class OrderComponent extends Vue {
   public confirm_text: ConfirmTextEntity = new ConfirmTextEntity();
   public date: string = new Date().toISOString().substr(0, 10);
   public phoneMask: string = "+44 (###) ###-##-##";
-  public form: Order = new Order();
-  public orders: Order[] = [];
+  public form: OrderEntity = new OrderEntity();
+  public orders: OrderEntity[] = [];
   public headers: HeaderEntity[] = [];
   public airports: string[] = ["Heathrow", "Gatwick"];
   public terminals: string[] = ["1", "2", "3", "4", "not sure"]
@@ -231,7 +231,7 @@ export default class OrderComponent extends Vue {
         this.resetForm();
         this.snackBarIsShow = true;
         if (res && res.data) {
-          this.orders.push(res.data);
+          this.orders = [...res.data];
           localStorage.setItem('orders', JSON.stringify(this.orders));
         }
       });
@@ -248,10 +248,10 @@ export default class OrderComponent extends Vue {
     }
   }
 
-  public openConfirmModal(data: any) {
+  public openConfirmModal(data: { item: OrderEntity, index: number, col: HeaderEntity }) {
     this.remove_item = data;
-    this.confirm_text.title = 'Order removing';
-    this.confirm_text.text = `Are ure sure want to delete order with ID ${data.item.id}?`;
+    this.confirm_text.title = 'Order cancel';
+    this.confirm_text.text = `Are you sure you want to cancel order with ID ${data.item.id}?`;
     this.show_modal = true;
   }
 
@@ -277,62 +277,14 @@ export default class OrderComponent extends Vue {
   }
 
   public prepareTableCfg() {
-    const idCol: HeaderEntity = {
-      text: 'Order ID',
-      align: 'start',
-      sortable: true,
-      value: 'id',
-    };
-
-    const nameCol: HeaderEntity = {
-      text: 'Name',
-      align: 'start',
-      sortable: true,
-      value: 'name',
-    };
-
-    const phoneCol: HeaderEntity = {
-      text: 'Phone',
-      align: 'start',
-      sortable: true,
-      value: 'phone',
-    };
-
-    const dateCol: HeaderEntity = {
-      text: 'Date',
-      align: 'start',
-      sortable: true,
-      value: 'date',
-    };
-
-    const airportCol: HeaderEntity = {
-      text: 'Airport',
-      align: 'start',
-      sortable: true,
-      value: 'airport',
-    };
-
-    const terminalCol: HeaderEntity = {
-      text: 'Terminal №',
-      align: 'start',
-      sortable: true,
-      value: 'terminal',
-    };
-
-    const flightNumberCol: HeaderEntity = {
-      text: 'Flight №',
-      align: 'start',
-      sortable: true,
-      value: 'flightNumber',
-    };
-
-    const controlCol: HeaderEntity = {
-      text: '',
-      align: 'center',
-      sortable: false,
-      type: 'container',
-      value: ''
-    };
+    const idCol = new HeaderEntity('Order ID', 'start', true, 'id');
+    const nameCol = new HeaderEntity('Name', 'start', true, 'name');
+    const phoneCol = new HeaderEntity('Phone', 'start', true, 'phone');
+    const dateCol = new HeaderEntity('Date', 'start', true, 'date');
+    const airportCol = new HeaderEntity('Airport', 'start', true, 'airport');
+    const terminalCol = new HeaderEntity('Terminal №', 'start', true, 'terminal');
+    const flightNumberCol = new HeaderEntity('Flight №', 'start', true, 'flightNumber');
+    const controlCol = new HeaderEntity('', 'center', false, '', 'container');
 
     this.headers.push(
         idCol, nameCol, phoneCol, dateCol, airportCol, terminalCol, flightNumberCol, controlCol
